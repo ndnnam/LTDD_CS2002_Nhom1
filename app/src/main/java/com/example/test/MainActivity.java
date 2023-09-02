@@ -353,7 +353,7 @@ public class MainActivity extends AppCompatActivity {
                 myProfile.setUri(uri);
                 try {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                    myProfile.getImageAvatar().setImageBitmap(bitmap);
+//                    myProfile.getImageAvatar().setImageBitmap(bitmap);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -387,6 +387,6 @@ public class MainActivity extends AppCompatActivity {
             txtUserName.setText(user.getDisplayName());
         txtEmail.setText(user.getEmail());
         if(photoUrl != null)
-            Glide.with(txtEmail).load(photoUrl).error(R.drawable.ic_avata).into(headerImage);
+            Glide.with(this).load(photoUrl).error(R.drawable.ic_avata).into(headerImage);
     }
 }

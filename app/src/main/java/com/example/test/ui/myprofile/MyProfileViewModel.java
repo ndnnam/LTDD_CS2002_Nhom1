@@ -11,7 +11,7 @@ import android.widget.TextView;
 import androidx.lifecycle.ViewModel;
 
 public class MyProfileViewModel extends ViewModel {
-    private Uri uri;
+    public static Uri uri;
     private ImageView imageAvatar;
 
     public Uri getUri() {

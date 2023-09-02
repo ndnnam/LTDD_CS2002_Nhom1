@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.test.adapter.RcVwAdapter;
 import com.example.test.databinding.FragmentTasksBinding;
 import com.example.test.model.TaskModel;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,10 +40,12 @@ public class TasksFragment extends Fragment{
         recyView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new RcVwAdapter(getContext(), lst);
         recyView.setAdapter(adapter);
+
         mTaskModel.getList(lst, adapter, "Task");
 
-        mTaskModel.DeleteTask(lst, adapter, recyView);
 
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(mTaskModel.DeleteTask(lst, adapter));
+        itemTouchHelper.attachToRecyclerView(recyView);
         return root;
     }
 }

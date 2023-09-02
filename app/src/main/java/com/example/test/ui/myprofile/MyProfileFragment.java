@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,9 +19,9 @@ import com.example.test.databinding.FragmentMyprofileBinding;
 public class MyProfileFragment extends Fragment {
 
     private MainActivity mainActivity;
-    private UserController userController = new UserController();
+    private final UserController userController = new UserController();
 
-    public static MyProfileFragment newInstance() {
+    public static final MyProfileFragment newInstance() {
         return new MyProfileFragment();
     }
 
@@ -41,13 +42,14 @@ public class MyProfileFragment extends Fragment {
         userController.SetUserInformation(mViewModel.getEdtFullName()
                 , mViewModel.getTxtEmail()
                 , mViewModel.getImageAvatar()
-        , this.getActivity(), mainActivity);
+        , getActivity(), mainActivity);
+
         userController.initListener(mViewModel.getImageAvatar()
                 , mViewModel.getBtnMyProfile()
                 , mViewModel.getEdtFullName()
                 , mViewModel.getUri()
                 , mainActivity
-                , this.getActivity());
+                , getActivity());
 
         return root;
     }

@@ -22,9 +22,8 @@ public class TasksViewModel extends ViewModel {
         taskController.GetTask(lst, adapter, nameFragment);
     }
 
-    public void DeleteTask(List<TaskModel> taskModels, RcVwAdapter adapter, RecyclerView recyclerView){
+    public ItemTouchHelper.SimpleCallback DeleteTask(List<TaskModel> taskModels, RcVwAdapter adapter){
         ItemTouchHelper.SimpleCallback simpleCallback = taskController.ItemTouchHelperForDelete(taskModels, adapter);
-        if(simpleCallback != null)
-            taskController.DeleteTask(simpleCallback, recyclerView);
+       return simpleCallback;
     }
 }

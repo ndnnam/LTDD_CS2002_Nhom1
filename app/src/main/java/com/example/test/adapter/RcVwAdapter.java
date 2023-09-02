@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -28,6 +29,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -56,10 +58,10 @@ public class RcVwAdapter extends RecyclerView.Adapter<RcVwAdapter.TaskViewHolder
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, @SuppressLint("RecyclerView") int position) {
         final TaskModel item = taskList.get(position);
-        holder.txtActivity.setText(item.getTask());
-        holder.txtTime.setText(format.format(item.getTime()));
-        holder.chbxDone.setChecked(toBoolean(item.getDone()));
-        holder.chbxImp.setChecked(toBoolean(item.getImpo()));
+            holder.txtActivity.setText(item.getTask());
+            holder.txtTime.setText(format.format(item.getTime()));
+            holder.chbxDone.setChecked(toBoolean(item.getDone()));
+            holder.chbxImp.setChecked(toBoolean(item.getImpo()));
         //Done
         if(holder.chbxDone.isChecked())
             holder.txtActivity.setPaintFlags(holder.txtActivity.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
@@ -73,8 +75,7 @@ public class RcVwAdapter extends RecyclerView.Adapter<RcVwAdapter.TaskViewHolder
                     holder.txtActivity.setPaintFlags(holder.txtActivity.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
                     item.setDone(0);
                 }
-                if(item.getTask() != null)
-                    taskController.EditTask(item.getId(), "done", item.getDone());
+                taskController.EditTask(item.getId(), "done", item.getDone());
             }
         });
         //Important
@@ -83,11 +84,9 @@ public class RcVwAdapter extends RecyclerView.Adapter<RcVwAdapter.TaskViewHolder
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (holder.chbxImp.isChecked())
                     item.setImpo(1);
-                else {
+                else
                     item.setImpo(0);
-                }
-                if(item.getTask() != null)
-                    taskController.EditTask(item.getId(), "impo", item.getImpo());
+                taskController.EditTask(item.getId(), "impo", item.getImpo());
             }
         });
 
@@ -124,7 +123,6 @@ public class RcVwAdapter extends RecyclerView.Adapter<RcVwAdapter.TaskViewHolder
                         });
             }
         });
-
     }
 
     @Override

@@ -18,6 +18,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -34,26 +35,22 @@ public class TaskController {
     }
 
     public void EditTask(int id, String nameCheck, int checkBox) {
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                snapshot.getRef()
-                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                        .child("task")
-                        .child(String.valueOf(id))
-                        .child(nameCheck)
-                        .setValue(checkBox);
-            }
+        databaseReference
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        snapshot.getRef()
+                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                .child("task")
+                                .child(String.valueOf(id))
+                                .child(nameCheck)
+                                .setValue(checkBox);
+                        }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
-    }
-
-    public void DeleteTask(ItemTouchHelper.SimpleCallback simpleCallback, RecyclerView recyclerView) {
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
-        itemTouchHelper.attachToRecyclerView(recyclerView);
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                });
     }
 
     public ItemTouchHelper.SimpleCallback ItemTouchHelperForDelete(List<TaskModel> taskModels, RcVwAdapter adapter) {
@@ -65,17 +62,17 @@ public class TaskController {
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                int postion = viewHolder.getAdapterPosition();
+                int postion =  viewHolder.getAdapterPosition();
+                int id = taskModels.get(postion).getId();
                 switch (direction) {
                     case ItemTouchHelper.LEFT:
-                        databaseReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                .child("task")
-                                .child(String.valueOf(taskModels.get(postion).getId()))
-                                .getRef().removeValue();
                         if (taskModels.size() == 0)
                             taskModels.clear();
                         else
                             taskModels.remove(postion);
+                        databaseReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                .child("task")
+                                .child(String.valueOf(id)).setValue(null);
                         adapter.notifyItemRemoved(postion);
                         break;
                     default:
@@ -93,33 +90,31 @@ public class TaskController {
                 .child("task").addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                        switch (nameFragment){
+                        switch (nameFragment) {
                             case "MyDay":
-                                if(snapshot.getValue(TaskModel.class).getDone() == 1)
+                                if (snapshot.getValue(TaskModel.class).getDone() == 1)
                                     lst.add(snapshot.getValue(TaskModel.class));
-                                adapter.notifyDataSetChanged();
                                 break;
                             case "Important":
                                 if (snapshot.getValue(TaskModel.class).getImpo() == 1) {
                                     lst.add(snapshot.getValue(TaskModel.class));
-                                    adapter.notifyDataSetChanged();
                                 }
                                 break;
                             case "Task":
                                 lst.add(snapshot.getValue(TaskModel.class));
-                                adapter.notifyDataSetChanged();
                                 break;
                             default:
                                 break;
                         }
+                        adapter.notifyDataSetChanged();
                     }
 
                     @Override
                     public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                        switch (nameFragment){
+                        switch (nameFragment) {
                             case "Important":
                                 int i = 0;
-                                if(snapshot.getValue(TaskModel.class).getImpo() == 0)
+                                if (snapshot.getValue(TaskModel.class).getImpo() == 0)
                                     for (TaskModel taskModel : lst) {
                                         if (taskModel.getId() == snapshot.getValue(TaskModel.class).getId()) {
                                             lst.remove(taskModel);
@@ -131,7 +126,7 @@ public class TaskController {
                                 break;
                             case "MyDay":
                                 int j = 0;
-                                if(snapshot.getValue(TaskModel.class).getDone() == 0)
+                                if (snapshot.getValue(TaskModel.class).getDone() == 0)
                                     for (TaskModel taskModel : lst) {
                                         if (snapshot.getValue(TaskModel.class).getId() == taskModel.getId()) {
                                             Log.d("test", String.valueOf(taskModel.getId()));
@@ -141,6 +136,8 @@ public class TaskController {
                                         }
                                         j++;
                                     }
+                                break;
+                            case "Task":
                                 break;
                             default:
                                 break;
@@ -161,24 +158,5 @@ public class TaskController {
 
                     }
                 });
-    }
-    public void deleteTask(int id)
-    {
-        DatabaseReference taskRef = databaseReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .child("task");
-        taskRef.orderByChild("id").equalTo(String.valueOf(id)).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot data: snapshot.getChildren()){
-                    Log.d("TEST-DELETE", "value:" + data.getRef().getKey());
-                    data.getRef().removeValue();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("ERROR-DELETE", "loadPost:onCancelled", error.toException());
-            }
-        });
     }
 }

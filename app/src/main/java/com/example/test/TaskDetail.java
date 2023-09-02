@@ -171,8 +171,6 @@ public class TaskDetail extends AppCompatActivity {
                     mtask.setTime(date);
                 }
                 else mtask.setTime(time);
-                Log.d("TEST", "value: "+mtask.getTask());
-                Log.d("TEST", "value: "+mtask.getTime());
 
                 DatabaseReference taskRef = databaseReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                         .child("task");

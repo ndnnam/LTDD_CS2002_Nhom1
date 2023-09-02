@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -55,7 +56,7 @@ public class UserController {
             edtFullName.setText(user.getDisplayName());
             txtEmail.setText(user.getEmail());
             Glide.with(fragment).load(user.getPhotoUrl()).error(R.drawable.ic_avata).into(imageView);
-//            mainActivity.showInformation();
+            mainActivity.showInformation();
         }
     }
 
@@ -97,6 +98,7 @@ public class UserController {
         if(user == null)
             return;
         String Name = fullName.getText().toString().trim();
+
         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                 .setDisplayName(Name)
                 .setPhotoUri(uri)
@@ -106,8 +108,8 @@ public class UserController {
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-//                        if(task.isSuccessful())
-//                            mainActivity.showInformation();
+                        if(task.isSuccessful())
+                            mainActivity.showInformation();
                     }
                 });
     }
